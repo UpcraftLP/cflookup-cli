@@ -45,11 +45,6 @@ jobs:
             cargo_cmd: cargo
           - os: ubuntu-latest
             os_name: linux
-            target: i686-unknown-linux-gnu
-            target_name: x86
-            cargo_cmd: cross
-          - os: ubuntu-latest
-            os_name: linux
             target: aarch64-unknown-linux-gnu
             target_name: arm64
             cargo_cmd: cross
@@ -58,10 +53,10 @@ jobs:
             target: x86_64-pc-windows-msvc
             target_name: x64
             cargo_cmd: cargo
-          - os: windows-latest
-            os_name: windows
-            target: i686-pc-windows-msvc
-            target_name: x86
+          - os: macos-latest
+            os_name: macos
+            target: aarch64-apple-darwin
+            target_name: arm64
             cargo_cmd: cargo
     steps:
       - uses: actions/checkout@v5
