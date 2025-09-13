@@ -18,23 +18,25 @@ jobs:
     outputs:
       REPOSITORY_NAME: ${{ steps.setup.outputs.REPOSITORY_NAME }}
       BUILD_TIME: ${{ steps.setup.outputs.BUILD_TIME }}
+      SHA_SHORT: ${{ steps.setup.outputs.SHA_SHORT }}
     steps:
       - name: Setup Environment
         id: setup
         run: |
           echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_OUTPUT
           echo BUILD_TIME=$(date '+%y.%m%d.%H%M') >> $GITHUB_OUTPUT
+          echo SHA_SHORT=$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT
 
   build_matrix:
-    name: "Build and Test (${{ matrix.os_name }} ${{ matrix.target_name }} - ${{ matrix.build_profile }})"
+    name: "Build and Test (${{ matrix.os_name }} ${{ matrix.target_name }})"
     needs: [init]
     env:
       CARGO_TERM_COLOR: always
+      CARGO_PKG_VERSION: ${{ needs.init.outputs.BUILD_TIME }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        build_profile: [dev, release]
         include:
           - os: ubuntu-latest
             os_name: linux
@@ -83,17 +85,16 @@ jobs:
           shared-key: "${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}"
 
       - name: Test
-        if: ${{ matrix.build_profile == 'dev' }}
-        run: "${{ matrix.cargo_cmd }} test --locked --all-features --verbose --target ${{ matrix.target }} --profile ${{ matrix.build_profile }}"
+        run: "${{ matrix.cargo_cmd }} test --locked --all-features --verbose --target ${{ matrix.target }} --profile dev"
 
       - name: Build
-        run: "${{ matrix.cargo_cmd }} build --locked --verbose --target ${{ matrix.target }} --profile ${{ matrix.build_profile }}"
+        run: "${{ matrix.cargo_cmd }} build --locked --verbose --target ${{ matrix.target }} --release"
 
       - name: Upload Artifacts
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ needs.init.outputs.REPOSITORY_NAME }}-${{ matrix.os_name }}-${{ matrix.target_name }}-${{ github.sha }}-${{ matrix.build_profile }}
+          name: ${{ needs.init.outputs.REPOSITORY_NAME }}-${{ matrix.os_name }}-${{ matrix.target_name }}-${{ github.sha }}
           if-no-files-found: error
           path: |
-            target/${{ matrix.target }}/${{ matrix.build_profile }}/${{ env.APP_NAME }}*
+            target/${{ matrix.target }}/release/${{ env.APP_NAME }}*
