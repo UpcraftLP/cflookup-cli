@@ -33,6 +33,7 @@ jobs:
     env:
       CARGO_TERM_COLOR: always
       CARGO_PKG_VERSION: ${{ needs.init.outputs.BUILD_TIME }}
+      SHA_SHORT: ${{ needs.init.outputs.SHA_SHORT }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -89,7 +90,7 @@ jobs:
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ needs.init.outputs.REPOSITORY_NAME }}-${{ matrix.os_name }}-${{ matrix.target_name }}-${{ github.sha }}
+          name: ${{ needs.init.outputs.REPOSITORY_NAME }}-${{ matrix.os_name }}-${{ matrix.target_name }}-${{ env.SHA_SHORT }}
           if-no-files-found: error
           path: |
             target/${{ matrix.target }}/release/${{ env.APP_NAME }}*
