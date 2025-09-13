@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: ["*"]
+
+env:
+  APP_NAME: cflookup
+  RUST_VERSION: stable
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  init:
+    runs-on: ubuntu-latest
+    outputs:
+      REPOSITORY_NAME: ${{ steps.setup.outputs.REPOSITORY_NAME }}
+      BUILD_TIME: ${{ steps.setup.outputs.BUILD_TIME }}
+    steps:
+      - name: Setup Environment
+        id: setup
+        run: |
+          echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_OUTPUT
+          echo BUILD_TIME=$(date '+%y.%m%d.%H%M') >> $GITHUB_OUTPUT
+
+  build_matrix:
+    name: "Build and Test (${{ matrix.os_name }} ${{ matrix.target_name }} - ${{ matrix.build_profile }})"
+    needs: [init]
+    env:
+      CARGO_TERM_COLOR: always
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        build_profile: [dev, release]
+        include:
+          - os: ubuntu-latest
+            os_name: linux
+            target: x86_64-unknown-linux-gnu
+            target_name: x64
+            cargo_cmd: cargo
+          - os: ubuntu-latest
+            os_name: linux
+            target: i686-unknown-linux-gnu
+            target_name: x86
+            cargo_cmd: cross
+          - os: ubuntu-latest
+            os_name: linux
+            target: aarch64-unknown-linux-gnu
+            target_name: arm64
+            cargo_cmd: cross
+          - os: windows-latest
+            os_name: windows
+            target: x86_64-pc-windows-msvc
+            target_name: x64
+            cargo_cmd: cargo
+          - os: windows-latest
+            os_name: windows
+            target: i686-pc-windows-msvc
+            target_name: x86
+            cargo_cmd: cargo
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Rust toolchain
+        if: ${{ matrix.cargo_cmd != 'cross' }}
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+        with:
+          toolchain: stable
+          targets: ${{ matrix.target }}
+
+      - name: Install cross
+        if: ${{ matrix.cargo_cmd == 'cross' }}
+        run: |
+          cargo install cross
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Cache
+        uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0 # v2.8.0
+        with:
+          shared-key: "${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}"
+
+      - name: Test
+        if: ${{ matrix.build_profile == 'dev' }}
+        run: "${{ matrix.cargo_cmd }} test --locked --all-features --verbose --target ${{ matrix.target }} --profile ${{ matrix.build_profile }}"
+
+      - name: Build
+        run: "${{ matrix.cargo_cmd }} build --locked --verbose --target ${{ matrix.target }} --profile ${{ matrix.build_profile }}"
+
+      - name: Upload Artifacts
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.init.outputs.REPOSITORY_NAME }}-${{ matrix.os_name }}-${{ matrix.target_name }}-${{ github.sha }}-${{ matrix.build_profile }}
+          if-no-files-found: error
+          path: |
+            target/${{ matrix.target }}/${{ matrix.build_profile }}/${{ env.APP_NAME }}*
