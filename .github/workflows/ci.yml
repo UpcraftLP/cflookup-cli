@@ -94,3 +94,11 @@ jobs:
           if-no-files-found: error
           path: |
             target/${{ matrix.target }}/release/${{ env.APP_NAME }}*
+
+  dependency_info:
+    name: Submit Dependency Information
+    needs: build_matrix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect and submit dependency information
+        uses: advanced-security/component-detection-dependency-submission-actiond433c2f467e149a8009c8fbce92cc708ed15ef7b # v0.1.0
