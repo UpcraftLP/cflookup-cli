@@ -1,5 +1,17 @@
 [package]
 name = "cflookup-cli"
+description = "CLI version of https://cflookup.com"
+keywords = ["minecraft", "curseforge", "mods", "modpack"]
+categories = ["command-line-utilities", "api-bindings", "development-tools", "game-development"]
+license = "MIT"
+authors = [
+    "Up"
+]
+repository = "https://github.com/UpcraftLP/cflookup-cli"
+readme = "README.md"
+exclude = [
+    "/.github/**"
+]
 edition = "2024"
 
 [dependencies]
