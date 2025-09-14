@@ -20,6 +20,7 @@ jobs:
       BUILD_TIME: ${{ steps.setup.outputs.BUILD_TIME }}
       SHA_SHORT: ${{ steps.setup.outputs.SHA_SHORT }}
     steps:
+      - uses: actions/checkout@v5
       - name: Setup Environment
         id: setup
         run: |
