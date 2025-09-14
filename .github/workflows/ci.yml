@@ -34,6 +34,10 @@ jobs:
       CARGO_TERM_COLOR: always
       CARGO_PKG_VERSION: ${{ needs.init.outputs.BUILD_TIME }}
       SHA_SHORT: ${{ needs.init.outputs.SHA_SHORT }}
+    permissions:
+      id-token: write
+      contents: read
+      attestations: write
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -94,6 +98,13 @@ jobs:
           if-no-files-found: error
           path: |
             target/${{ matrix.target }}/release/${{ env.APP_NAME }}*
+
+      - name: Generate Built Attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: |
+            target/${{ matrix.target }}/release/${{ env.APP_NAME }}*
+            !target/${{ matrix.target }}/release/${{ env.APP_NAME }}*.d
 
   dependency_info:
     name: Submit Dependency Information
