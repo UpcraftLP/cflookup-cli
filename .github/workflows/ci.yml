@@ -31,7 +31,6 @@ jobs:
     name: "Build and Test (${{ matrix.os_name }} ${{ matrix.target_name }})"
     needs: init
     env:
-      CARGO_TERM_COLOR: always
       CARGO_PKG_VERSION: ${{ needs.init.outputs.BUILD_TIME }}
       SHA_SHORT: ${{ needs.init.outputs.SHA_SHORT }}
     permissions:
@@ -104,7 +103,6 @@ jobs:
         with:
           subject-path: |
             target/${{ matrix.target }}/release/${{ env.APP_NAME }}*
-            !target/${{ matrix.target }}/release/${{ env.APP_NAME }}*.d
 
   dependency_info:
     name: Submit Dependency Information
