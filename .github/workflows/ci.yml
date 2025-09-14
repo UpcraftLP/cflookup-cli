@@ -99,6 +99,9 @@ jobs:
     name: Submit Dependency Information
     needs: build_matrix
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
     steps:
       - uses: actions/checkout@v5
       - name: Collect and submit dependency information
