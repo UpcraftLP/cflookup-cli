@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["*"]
+    branches: [ "*" ]
 
 env:
   APP_NAME: cflookup
@@ -29,7 +29,7 @@ jobs:
 
   build_matrix:
     name: "Build and Test (${{ matrix.os_name }} ${{ matrix.target_name }})"
-    needs: [init]
+    needs: init
     env:
       CARGO_TERM_COLOR: always
       CARGO_PKG_VERSION: ${{ needs.init.outputs.BUILD_TIME }}
@@ -62,25 +62,25 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Set up Rust toolchain
+      - name: Setup Rust Toolchain
         if: ${{ matrix.cargo_cmd != 'cross' }}
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
         with:
           toolchain: stable
           targets: ${{ matrix.target }}
 
-      - name: Install cross
+      - name: Install Cross
         if: ${{ matrix.cargo_cmd == 'cross' }}
         run: |
           cargo install cross
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-      - name: Cache
+      - name: Setup Cache
         uses: Swatinem/rust-cache@98c8021b550208e191a6a3145459bfc9fb29c4c0 # v2.8.0
         with:
           shared-key: "${{ matrix.os }}-${{ matrix.target }}-${{ hashFiles('**/Cargo.lock') }}"
 
-      - name: Test
+      - name: Run Tests
         run: "${{ matrix.cargo_cmd }} test --locked --all-features --verbose --target ${{ matrix.target }} --profile dev"
 
       - name: Build
