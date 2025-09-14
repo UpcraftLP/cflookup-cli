@@ -101,4 +101,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Collect and submit dependency information
-        uses: advanced-security/component-detection-dependency-submission-actiond433c2f467e149a8009c8fbce92cc708ed15ef7b # v0.1.0
+        uses: advanced-security/component-detection-dependency-submission-action@d433c2f467e149a8009c8fbce92cc708ed15ef7b # v0.1.0
