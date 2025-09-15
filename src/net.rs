@@ -1,9 +1,8 @@
-use crate::USER_AGENT;
 use anyhow::bail;
 use reqwest::{Client, IntoUrl};
 
 fn client() -> anyhow::Result<Client> {
-    let client = Client::builder().user_agent(USER_AGENT).build()?;
+    let client = Client::builder().user_agent(crate::user_agent()).build()?;
 
     Ok(client)
 }
