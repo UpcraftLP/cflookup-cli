@@ -8,8 +8,8 @@ pub mod built_info {
 }
 
 static CRATE_VERSION: LazyLock<String, fn() -> String> = LazyLock::new(|| {
-    if built_info::PKG_VERSION != "0.0.0" {
-        return built_info::PKG_VERSION.to_string();
+    if let Some(version) = option_env!("VERSION") {
+        return version.to_string();
     }
 
     // otherwise: use git commit
