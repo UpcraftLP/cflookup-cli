@@ -1,7 +1,8 @@
 use cflookup_cli::cflookup::{
     Mod, get_file_info, get_project_by_id, get_project_by_slug, search_project_by_slug,
 };
-use clap::{Parser, Subcommand};
+use cflookup_cli::crate_version;
+use clap::{CommandFactory, FromArgMatches, Parser, Subcommand};
 use http::Uri;
 use serde::Serialize;
 
@@ -50,7 +51,9 @@ enum Commands {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let cli: Cli = Cli::parse();
+    let command = Cli::command().version(crate_version()).get_matches();
+
+    let cli: Cli = Cli::from_arg_matches(&command)?;
 
     match cli.nested {
         Some(sub) => {
