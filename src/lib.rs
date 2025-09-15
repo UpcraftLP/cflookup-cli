@@ -7,13 +7,23 @@ pub mod built_info {
     include!(concat!(env!("OUT_DIR"), "/built.rs"));
 }
 
-static CRATE_VERSION: LazyLock<String, fn() -> String> =
-    LazyLock::new(|| match env!("CARGO_PKG_VERSION") {
-        "0.0.0" => built_info::GIT_COMMIT_HASH_SHORT
-            .map(|hash| format!("git+{hash}"))
-            .unwrap_or_else(|| "UNKNOWN".to_string()),
-        ver => ver.to_string(),
-    });
+static CRATE_VERSION: LazyLock<String, fn() -> String> = LazyLock::new(|| {
+    if built_info::PKG_VERSION != "0.0.0" {
+        return built_info::PKG_VERSION.to_string();
+    }
+
+    // otherwise: use git commit
+    if let Some(hash) = built_info::GIT_COMMIT_HASH_SHORT {
+        return format!("git+{hash}");
+    }
+
+    // finally, use build time
+    let timestamp = built::util::strptime(built_info::BUILT_TIME_UTC);
+    format!(
+        "CUSTOM+{build_time}",
+        build_time = timestamp.format("%y.%m%d.%H%M")
+    )
+});
 
 pub fn crate_version() -> &'static str {
     &CRATE_VERSION
