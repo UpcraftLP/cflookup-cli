@@ -30,7 +30,7 @@ jobs:
     name: "Build and Test (${{ matrix.os_name }} ${{ matrix.target_name }})"
     needs: init
     env:
-      CARGO_PKG_VERSION: ${{ needs.init.outputs.BUILD_TIME }}
+      VERSION: ${{ needs.init.outputs.BUILD_TIME }}
     permissions:
       id-token: write
       contents: read
@@ -91,7 +91,7 @@ jobs:
         id: upload
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ needs.init.outputs.REPOSITORY_NAME }}-${{ matrix.os_name }}-${{ matrix.target_name }}-${{ env.CARGO_PKG_VERSION }}
+          name: ${{ needs.init.outputs.REPOSITORY_NAME }}-${{ matrix.os_name }}-${{ matrix.target_name }}-${{ env.VERSION }}
           if-no-files-found: error
           path: |
             target/${{ matrix.target }}/release/${{ env.APP_NAME }}*
