@@ -26,7 +26,7 @@ jobs:
         run: |
           echo "REPOSITORY_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_OUTPUT
           echo BUILD_TIME=$(date '+%y.%m%d.%H%M') >> $GITHUB_OUTPUT
-          echo SHA_SHORT=$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT`
+          echo SHA_SHORT=$(git rev-parse --short HEAD) >> $GITHUB_OUTPUT
 
   build_matrix:
     name: "Build and Test (${{ matrix.os_name }} ${{ matrix.target_name }})"
