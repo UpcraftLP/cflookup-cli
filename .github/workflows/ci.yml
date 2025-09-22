@@ -44,22 +44,18 @@ jobs:
             os_name: linux
             target: x86_64-unknown-linux-gnu
             target_name: x64
-            cargo_cmd: cargo
           - os: ubuntu-24.04-arm
             os_name: linux
             target: aarch64-unknown-linux-gnu
             target_name: arm64
-            cargo_cmd: cargo
           - os: windows-latest
             os_name: windows
             target: x86_64-pc-windows-msvc
             target_name: x64
-            cargo_cmd: cargo
           - os: macos-latest
             os_name: macos
             target: aarch64-apple-darwin
             target_name: arm64
-            cargo_cmd: cargo
     steps:
       - uses: actions/checkout@v5
 
@@ -75,10 +71,10 @@ jobs:
           key: ${{ matrix.target_name }}
 
       - name: Run Tests
-        run: "${{ matrix.cargo_cmd }} test --locked --all-features --verbose --target ${{ matrix.target }} --profile dev"
+        run: "cargo test --locked --all-features --verbose --target ${{ matrix.target }} --profile dev"
 
       - name: Build
-        run: "${{ matrix.cargo_cmd }} build --locked --verbose --target ${{ matrix.target }} --release"
+        run: "cargo build --locked --verbose --target ${{ matrix.target }} --release"
 
       - name: Upload Artifacts
         id: upload
