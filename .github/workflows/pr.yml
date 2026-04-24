@@ -20,7 +20,7 @@ jobs:
       BUILD_TIME: ${{ steps.setup.outputs.BUILD_TIME }}
       SHA_SHORT: ${{ steps.setup.outputs.SHA_SHORT }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup Environment
         id: setup
         run: |
@@ -64,7 +64,7 @@ jobs:
             target_name: arm64
             cargo_cmd: cargo
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Rust Toolchain
         if: ${{ matrix.cargo_cmd != 'cross' }}
