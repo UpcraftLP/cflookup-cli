@@ -50,7 +50,7 @@ enum Commands {
 }
 
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> rootcause::Result<()> {
     let command = Cli::command().version(crate_version()).get_matches();
 
     let cli: Cli = Cli::from_arg_matches(&command)?;

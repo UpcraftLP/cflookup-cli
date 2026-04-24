@@ -1,7 +1,7 @@
-use anyhow::bail;
 use reqwest::{Client, IntoUrl};
+use rootcause::bail;
 
-fn client() -> anyhow::Result<Client> {
+fn client() -> rootcause::Result<Client> {
     let client = Client::builder().user_agent(crate::user_agent()).build()?;
 
     Ok(client)
@@ -9,7 +9,7 @@ fn client() -> anyhow::Result<Client> {
 
 pub(crate) async fn make_json_request<U: IntoUrl>(
     uri: U,
-) -> anyhow::Result<Option<serde_json::Value>> {
+) -> rootcause::Result<Option<serde_json::Value>> {
     let client = client()?;
     let response = client
         .get(uri)

@@ -19,7 +19,7 @@ pub struct GameCategory {
     pub url: Option<Uri>,
 }
 
-pub async fn get_project_by_id(project_id: u64) -> anyhow::Result<Option<Mod>> {
+pub async fn get_project_by_id(project_id: u64) -> rootcause::Result<Option<Mod>> {
     let uri = format!("{BASE_URL}/{project_id}.json");
     net::make_json_request(uri).await
 }
@@ -28,19 +28,19 @@ pub async fn get_project_by_slug(
     game: &str,
     category: &str,
     slug: &str,
-) -> anyhow::Result<Option<Mod>> {
+) -> rootcause::Result<Option<Mod>> {
     let uri = format!("{BASE_URL}/{game}/{category}/{slug}.json");
     net::make_json_request(uri).await
 }
 
-pub async fn get_file_info(file_id: u64) -> anyhow::Result<Option<Mod>> {
+pub async fn get_file_info(file_id: u64) -> rootcause::Result<Option<Mod>> {
     let uri = format!("{BASE_URL}/file-{file_id}.json");
     net::make_json_request(uri).await
 }
 
 pub async fn search_project_by_slug(
     slug: &str,
-) -> anyhow::Result<(Vec<(GameCategory, Vec<Mod>)>, usize)> {
+) -> rootcause::Result<(Vec<(GameCategory, Vec<Mod>)>, usize)> {
     let uri = format!("{BASE_URL}/api/search/slug/{slug}");
     let Some(json) = net::make_json_request(uri).await? else {
         return Ok((vec![], 0));
