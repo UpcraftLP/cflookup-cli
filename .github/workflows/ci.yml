@@ -85,8 +85,8 @@ jobs:
           path: |
             target/${{ matrix.target }}/release/${{ env.APP_NAME }}*
 
-      - name: Generate Built Attestation
-        uses: actions/attest-build-provenance@v4
+      - name: Generate Build Attestation
+        uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
         with:
           subject-path: |
             target/${{ matrix.target }}/release/${{ env.APP_NAME }}*
