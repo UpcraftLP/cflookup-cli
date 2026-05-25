@@ -24,8 +24,8 @@ tokio = { version = "1.52.1", features = ["full"] }
 serde = { version = "1.0.228", features = ["derive"] }
 http = "1.4.0"
 http-serde = "2.1.1"
-built = { version = "0.8.0", features = ["chrono"] }
+built = { version = "0.8.1", features = ["chrono"] }
 rootcause = "0.12.1"
 
 [build-dependencies]
-built = { version = "0.8.0", features = ["chrono", "git2"] }
+built = { version = "0.8.1", features = ["chrono", "git2"] }
