@@ -19,7 +19,7 @@ jobs:
       REPOSITORY_NAME: ${{ steps.setup.outputs.REPOSITORY_NAME }}
       BUILD_TIME: ${{ steps.setup.outputs.BUILD_TIME }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Setup Environment
         id: setup
         run: |
@@ -57,7 +57,7 @@ jobs:
             target: aarch64-apple-darwin
             target_name: arm64
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup Rust Toolchain
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
@@ -99,6 +99,6 @@ jobs:
       id-token: write
       contents: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Collect and submit dependency information
         uses: advanced-security/component-detection-dependency-submission-action@9c110eb34dee187cd9eca76a652b9f6a0ed22927 # v0.1.1
